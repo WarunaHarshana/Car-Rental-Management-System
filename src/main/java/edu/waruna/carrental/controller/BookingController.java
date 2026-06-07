@@ -1,5 +1,8 @@
 package edu.waruna.carrental.controller;
 
+import edu.waruna.carrental.dto.BookingDTO;
+import edu.waruna.carrental.dto.CarDTO;
+import edu.waruna.carrental.dto.UserDTO;
 import edu.waruna.carrental.entity.Booking;
 import edu.waruna.carrental.entity.Car;
 import edu.waruna.carrental.entity.User;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/bookings")
@@ -78,13 +82,59 @@ public class BookingController {
     }
 
     @GetMapping
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
+    public List<BookingDTO> getAllBookings() {
+        return bookingRepository.findAll().stream().map(b -> {
+            BookingDTO dto = new BookingDTO();
+            dto.setId(b.getId());
+            dto.setStartDate(b.getStartDate());
+            dto.setEndDate(b.getEndDate());
+            dto.setTotalPrice(b.getTotalPrice());
+            dto.setStatus(b.getStatus());
+            dto.setPaymentStatus(b.getPaymentStatus());
+
+            if (b.getCar() != null) {
+                CarDTO carDto = new CarDTO();
+                carDto.setId(b.getCar().getId());
+                carDto.setBrand(b.getCar().getBrand());
+                carDto.setModel(b.getCar().getModel());
+                dto.setCar(carDto);
+            }
+
+            if (b.getUser() != null) {
+                UserDTO userDto = new UserDTO(b.getUser().getId(), b.getUser().getName(), b.getUser().getEmail(), b.getUser().getRole());
+                dto.setUser(userDto);
+            }
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @GetMapping("/user/{userId}")
-    public List<Booking> getBookingsByUserId(@PathVariable Long userId) {
-        return bookingRepository.findByUserId(userId);
+    public List<BookingDTO> getBookingsByUserId(@PathVariable Long userId) {
+        return bookingRepository.findByUserId(userId).stream().map(b -> {
+            BookingDTO dto = new BookingDTO();
+            dto.setId(b.getId());
+            dto.setStartDate(b.getStartDate());
+            dto.setEndDate(b.getEndDate());
+            dto.setTotalPrice(b.getTotalPrice());
+            dto.setStatus(b.getStatus());
+            dto.setPaymentStatus(b.getPaymentStatus());
+
+            if (b.getCar() != null) {
+                CarDTO carDto = new CarDTO();
+                carDto.setId(b.getCar().getId());
+                carDto.setBrand(b.getCar().getBrand());
+                carDto.setModel(b.getCar().getModel());
+                dto.setCar(carDto);
+            }
+
+            if (b.getUser() != null) {
+                UserDTO userDto = new UserDTO(b.getUser().getId(), b.getUser().getName(), b.getUser().getEmail(), b.getUser().getRole());
+                dto.setUser(userDto);
+            }
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     @PutMapping("/{id}/status")
