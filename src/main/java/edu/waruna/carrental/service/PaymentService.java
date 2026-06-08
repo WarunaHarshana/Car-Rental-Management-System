@@ -45,12 +45,12 @@ public class PaymentService {
         return saved;
     }
 
-    // All payments (used by admin and the revenue report later)
+    // All payments
     public List<Payment> getAllPayments() {
         return paymentRepository.findAll();
     }
 
-    // Payment history for a single booking
+    // Payment history
     public List<Payment> getPaymentsForBooking(Long bookingId) {
         return paymentRepository.findByBookingId(bookingId);
     }

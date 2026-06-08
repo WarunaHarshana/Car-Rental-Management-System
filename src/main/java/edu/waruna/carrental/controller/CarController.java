@@ -1,6 +1,5 @@
 package edu.waruna.carrental.controller;
 
-
 import edu.waruna.carrental.entity.Car;
 import edu.waruna.carrental.repository.CarRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class CarController {
     private CarRepository carRepository;
 
     @GetMapping
-    public List<Car> getAllCars(){
+    public List<Car> getAllCars() {
         return carRepository.findAll();
     }
 
@@ -67,16 +66,10 @@ public class CarController {
         return ResponseEntity.notFound().build();
     }
 
-    /**
-     * POST /api/cars/{id}/photo
-     * Accepts a multipart image file, saves it to uploads/cars/,
-     * updates the car's imageUrl in the database, and returns the updated car.
-     */
     @PostMapping("/{id}/photo")
     public ResponseEntity<?> uploadCarPhoto(
             @PathVariable Long id,
-            @RequestParam("file") MultipartFile file
-    ) {
+            @RequestParam("file") MultipartFile file) {
         try {
             Car car = carRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Car not found with id: " + id));
