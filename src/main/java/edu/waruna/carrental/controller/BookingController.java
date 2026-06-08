@@ -35,6 +35,18 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<?> placeBooking(@RequestBody Booking booking) {
 
+        if (booking.getStartDate() == null || booking.getEndDate() == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Booking dates cannot be empty!");
+        }
+
+        if (booking.getStartDate().isBefore(java.time.LocalDate.now())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: Start date cannot be in the past!");
+        }
+
+        if (booking.getEndDate().isBefore(booking.getStartDate())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: End date cannot be before start date!");
+        }
+
         Optional<Car> carOpt = carRepository.findById(booking.getCar().getId());
 
         if (carOpt.isEmpty()) {
